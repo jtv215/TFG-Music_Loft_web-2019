@@ -1,0 +1,105 @@
+<!doctype html>
+
+<!-- Idioma -->
+<html lang="es">
+<head>
+   <!-- Caracteres + titulo de la pagina--->
+    <meta charset="utf-8">
+     <title>Music-Loft</title>
+    <meta name="description" content="Music-Loft">
+    <!---Referencias de la pagina--->
+    <link rel="stylesheet" href="micss.css" type="text/css">
+    		<!--Response-->
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!---Referencias del LOGO para la pagina  <link rel"icono" type="img/logo.PNG" >-->
+		<link rel="Shortcut Icon" href="img/favicon.png" type="png" />
+		 <!--Javascript-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type=text/javascript>		
+		
+			function enviar(){	
+			
+					var correo= document.getElementById('correo').value;
+					var pass= document.getElementById('password').value;				
+									
+							
+								var parametros ={
+									"email":correo,
+									"pass":pass
+									};
+							
+							$.ajax({
+								url:'Funciones/validarLogin.php',
+								type:'POST',
+								cache: false,							
+								dataType: 'json',
+								data: parametros,
+								success:function(resp){	
+									
+									if(resp=="noExiste"){
+									document.getElementById('respuesta').innerHTML='Correo o contraseña incorrecta'; 		
+												
+									}else{
+										if(pass==resp.contrasena){
+											localStorage.clear();
+											sessionStorage.setItem("id", resp.id);
+											sessionStorage.setItem("nombre", resp.nombre);
+													
+											window.location.assign("index2.html");			
+																																				
+										}else{
+										
+											document.getElementById('respuesta').innerHTML='Correo o contraseña incorrecta'; 
+										}											
+									}
+								}//cierra el success					
+				});//cierra ajax
+				return false;
+		}
+</script>
+</head>
+
+<body>
+	<div class="contenedor">
+			<!--Barra izq-->
+
+			<!--	<div id="principal">-->
+		    <div class="indexBarraIzq">
+				<div class="imagenlogo"></div>			
+			</div>
+			<!--Formulario login-->
+			<div class="indexBarraDerecha">	
+			  <form class="formulariologin" onsubmit="return enviar()" > 
+
+					<div class="titulo"><span>Bienvenido a Music-Loft <br></span></div>
+					<div class="introduccion"><span>Empieza a disfrutar de tus canciones favoritas en los mejores locales de ambiente
+						con la tecnolgia Music-Loft, registrate y obten puntos de Bienvenida. 
+					</span></div>
+					 
+					 <div class="field-login">
+						<span>Correo<i style="color:red">*</i></span>
+						<input id="correo" type="text" placeholder="Escribe tu email"  value="" required>
+					</div>
+							
+					<div class="field-login">
+						<span>Contraseña <i style="color:red">*</i></span>
+						<input id="password" type="password"  placeholder="Escribe tu contraseña" value="" required>
+					</div>
+					<div>
+							<span id="respuesta"  style="color:red" style="text-align:left"></span>
+						</div>
+					<div class="submit"> 
+						<input id="botonRegistrar" type="submit" value="REGISTRATE" onclick="location.href='registro.html'"></input>
+            <input id="botonaceptar" type="submit" value="ACEPTAR" ></input>
+					</div>
+				</form>
+				
+		<!--	</div>-->
+	       
+		</div>
+	</div>   <!--cierra contenedor-->
+	
+
+
+</body>
+</html>

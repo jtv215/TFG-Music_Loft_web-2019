@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="libJplayer/dist/skin/pink.flag/css/jplayer.pink.flag.min.css" rel="stylesheet" type="text/css" />
+<link href="micss.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="libJplayer/lib/jquery.min.js"></script>
+<script type="text/javascript" src="libJplayer/dist/jplayer/jquery.jplayer.min.js"></script>
+<script type="text/javascript" src="libJplayer/dist/add-on/jplayer.playlist.min.js"></script>
+<script type="text/javascript">
+
+
+//<![CDATA[
+$(document).ready(function(){
+var titulo="";
+var artista="";
+var mp3="";
+
+	myPlaylist = new jPlayerPlaylist({
+		jPlayer: "#jquery_jplayer_1",
+		cssSelectorAncestor: "#jp_container_1"
+	}, [
+		{
+	
+			title:"the_derevolutions_its_a_derevolution_baby_",
+			artist:"The Derevolutions",
+			m4v:"../../../canciones/the_derevolutions_its_a_derevolution_baby_.m4v",
+			poster: "https://i.ytimg.com/vi/z3JIZgSnp2A/maxresdefault.jpg"
+	
+		}
+
+	], {
+		swfPath: "../../dist/jplayer",
+		supplied: "webmv, ogv, m4v, oga, mp3",
+		useStateClassSkin: true,
+		autoBlur: false,
+		smoothPlayBar: true,
+		keyEnabled: true,
+		audioFullScreen: true,
+				
+		ended : function(){
+			aniadirlistayeliminarAnterior();	
+		},	
+		cssSelector:{ 
+		 title: "#title",
+         currentTime: "#currentTime",
+         duration: "#duration"		 
+        }
+		 
+	});
+
+	//Método boton Siguiente
+	$(".jp-next").click(function() {	
+		var idLocal = sessionStorage.getItem("id");		
+		$.ajax({
+		url:'Funciones/cargarCanciones.php',
+		type:'POST',
+		data:'idLocal='+idLocal
+		}).done(function(resp){		
+			var valores = eval(resp);
+			//alert(valores[0][9])
+			if(valores[0][9]=='audio'){	
+			myPlaylist.add({
+			title:valores[0][2],
+			artist:valores[0][3],
+			mp3:"../../../canciones/"+valores[0][10]+".mp3",			
+			poster: valores[0][4]
+			});
+			}
+
+			if(valores[0][9]=="video"){
+				//alert(valores[0][10]+".m4v")
+			myPlaylist.add({
+			title:valores[0][2],
+			artist:valores[0][3],
+			m4v:"../../../canciones/"+valores[0][10]+".m4v",	
+			poster: valores[0][4]
+			});
+			}
+			myPlaylist.next();
+			eliminarcancion();
+			var idCancion= valores[0][0];
+			resetearCancion(idCancion);
+		});
+	});
+
+	//Añadir más métodos
+	function aniadirlistayeliminarAnterior () {
+
+		var idLocal = sessionStorage.getItem("id");
+		$.ajax({
+		url:'Funciones/cargarCanciones.php',
+		type:'POST',
+		data:'idLocal='+idLocal
+		}).done(function(resp){		
+			var valores = eval(resp);
+
+			if(valores[0][9]=='audio'){	
+			myPlaylist.add({
+			title:valores[0][2],
+			artist:valores[0][3],
+			mp3:"../../../canciones/"+valores[0][10]+".mp3",			
+			poster: valores[0][4]
+			});
+			}
+
+			if(valores[0][9]=="video"){
+				//alert(valores[0][10]+".m4v")
+			myPlaylist.add({
+			title:valores[0][2],
+			artist:valores[0][3],
+			m4v:"../../../canciones/"+valores[0][10]+".m4v",
+	
+			poster: valores[0][4]
+			});
+			}
+			myPlaylist.next();
+			eliminarcancion();
+			var idCancion= valores[0][0];
+			resetearCancion(idCancion);
+		});
+	};
+
+	//Eliminar cancion
+	function eliminarcancion () {
+		myPlaylist.remove(0);
+	};
+
+	function resetearCancion (idCancion) {
+		$.ajax({
+		url:'Funciones/resetearCancion.php',
+		type:'POST',
+		data:'idCancion='+idCancion
+		}).done(function(resp){
+			
+		});
+
+	};
+
+
+	                     
+        /*Obtener datos almacenados*/       
+        var nombre = sessionStorage.getItem("nombre");
+        /*Mostrar datos almacenados*/      
+        document.getElementById("nombre").innerHTML = nombre;
+       // document.getElementById("apellido").innerHTML = apellido; 
+     
+
+});
+//]]>
+</script>
+
+</style>
+
+</head>
+<body>
+
+<div id="contenedor">
+
+	<!--barra Arriba-->
+	<div id="ParteArriba">
+		<div class="nombreLogo">Music-Loft</div>
+		<div class="logo"><img class="logo" src="img/logo.png" alt="Music-Loft" /></div>
+		
+	</div>
+
+	<!--barra lateral Izquierda-->
+	<div id="barralateral">
+		<ul id="lateralizq">
+			<li><span class="titulo">Menú</span></li>
+			<li ><a href="index2.html"><span class="subtitulo">Inicio</span></a></li>
+			<li><a href="subirCancion.html"><span class="subtitulo">Subir Canción</span></a></li>
+			<li><a href="editarLista.html"><span class="subtitulo">Editar Lista</span></a></li>
+			<li><a href="editarDatosPersonales.html"><span class="subtitulo">Datos Personales</span></a></li>
+			<li><a href="grafica.html"><span class="subtitulo">Ver Gráficas</span></a></li>		
+			<li id="salir"><a href="index.html"><span class="subtitulo" >Cerrar sesión</span></a></li>
+		</ul>
+	</div>
+	<div id="tituloindex2">  
+	<h1 ><span class="seccion">
+			<label type="text" id="nombre"></label>		
+			</span>Reproductor de AUDIO Y VIDEO</h1>
+	</div>
+
+	<!--contenido principal-->
+	<div id="principal">
+	
+
+		<div id= "columnaVacia"></div>
+		
+		<div id="reproductor">
+
+			<div id="jp_container_1" class="jp-video jp-video-270p" role="application" aria-label="media player">
+				<div class="jp-type-playlist">
+					<div id="jquery_jplayer_1" class="jp-jplayer"></div>
+						<div class="jp-gui">
+							<div class="jp-video-play">
+								<button class="jp-video-play-icon" role="button" tabindex="0">play</button>
+							</div>
+				<!-- la interfaz-->
+				<div class="jp-interface"  style="width: 480px; height: 100px;">
+							<div class="jp-progress">
+								<div class="jp-seek-bar">
+									<div class="jp-play-bar"></div>
+								</div>
+							</div>
+				<div class="jp-current-time" id="currentTime" role="timer" aria-label="time">&nbsp;</div>
+				<div class="jp-duration"  id="duration" role="timer" aria-label="duration">&nbsp;</div>
+				<div class="jp-details">
+						<div class="jp-title" aria-label="title">&nbsp;</div>
+				</div>									
+				<div class="jp-controls-holder">
+					<div class="jp-volume-controls">
+						<button class="jp-mute" role="button" tabindex="0">mute</button>
+						<button class="jp-volume-max" role="button" tabindex="0">max volume</button>
+						<div class="jp-volume-bar">
+							<div class="jp-volume-bar-value"></div>
+						</div>
+					</div>
+				<div class="jp-controls"  >
+					<button class="jp-previous" role="button" tabindex="0">previous</button>
+					<button class="jp-play" role="button" tabindex="0">play</button>
+					<button class="jp-stop" role="button" tabindex="0">stop</button>
+					<button class="jp-next" role="button" tabindex="0">next</button>
+				</div>				
+				<div class="jp-toggles">
+					<button class="jp-repeat" role="button" tabindex="0">repeat</button>
+					<button class="jp-shuffle" role="button" tabindex="0">shuffle</button>
+					<button class="jp-full-screen" role="button" tabindex="0">full screen</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="jp-playlist">
+		<ul>
+			<!-- The method Playlist.displayPlaylist() uses this unordered list -->
+			<li></li>
+			</ul>
+	</div>
+				
+	<div class="jp-no-solution">
+		<span>Update Required</span>
+			To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+	</div>
+					
+					<div>							
+						<span id="title" hidden ></span>
+						<span id="currentTime" hidden ></span>
+						<span id="duration" hidden ></span>
+						<input  hidden type="text"  id="terminada" value="No"></input><br>					
+					</div>
+	</div>
+</div>
+</div><!--CIERRA REPRODUCTOR-->
+
+<div id="tablaDerecha" onload="obtenerdatos()">
+		<div id="result"></div>
+</div>
+
+</div><!--CIERRA PRINCIPAL-->
+</div><!--CIERRA CONTENEDOR-->
+
+
+
+
+<script>
+		$(document).ready(function(){		
+			//Obteniendo datos
+
+			var idLocal = sessionStorage.getItem("id");
+			var parametros ={
+				"idLocal":idLocal
+			};
+			
+			function obtener_datos(){			
+				$.ajax({
+					url:"Funciones/mostrarListaReproduccion.php",
+					method:"POST",	
+					data: parametros,				
+					}).done(function(resp){	
+						//alert("hola" +resp);					
+						$("#result").html(resp)		
+					});					
+			}
+			$('#result').load(obtener_datos());	
+			setInterval(obtener_datos, 2000);
+	
+		});
+
+</script>
+
+</body>
+
+</html>

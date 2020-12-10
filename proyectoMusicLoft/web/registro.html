@@ -1,0 +1,110 @@
+<!doctype html>
+<!-- Idioma -->
+<html lang="es">
+<head>
+  
+    <meta charset="utf-8">
+     <title>Music-Loft</title>
+    <meta name="description" content="Music-Loft">
+ 
+    <link rel="stylesheet" href="micss.css" type="text/css">
+    		<!--Response-->
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+ 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+		<script type=text/javascript>		
+					
+					function enviarRegistro(){	
+											
+							var nombre= document.getElementById('nombre').value;
+							var correo= document.getElementById('correo').value;
+							var password= document.getElementById('password').value;
+							var generosMusicales= document.getElementById('generosMusicales').value;
+
+						
+							
+							var parametros ={
+									"nombre":nombre,
+									"correo":correo,
+									"password":password,
+									"generosMusicales":generosMusicales
+									};
+
+
+									$.ajax({
+									url:'Funciones/registrarLocal.php',
+									type:'POST',
+									cache: false,
+									dataType: 'json',
+									data: parametros,															
+									success: function (resp){	
+
+									
+										console.log("hola"+resp);
+										
+										if(resp=="OK"){											
+		
+											document.getElementById('respuesta2').innerHTML='Se ha registrado correctamente'; 					
+										}else{
+											document.getElementById("respuesta2").innerHTML="";
+											document.getElementById('respuesta').innerHTML='El Local ya esta registrado'; 	
+										}
+		
+									} //cierra el succes
+						});//cierra ajax
+
+						return false;
+					}
+
+				
+		</script>
+
+</head>
+
+<body>
+	<div class="contenedor">
+			<!--Barra izq-->
+		    <div class="indexBarraIzq">
+				<div class="imagenlogo"></div>			
+			</div>
+			<!--Formulario Registro-->
+			<div class="indexBarraDerecha">	
+			  <form class="formulariologin" onsubmit="return enviarRegistro()" > 
+
+					<div class="titulo"><span>Regístrate a Music-Loft <br></span></div>		
+								 
+					 	<div class="field-login">
+						<span>Nombre del Local <i style="color:red">*</i></span>
+						<input id="nombre" type="text" placeholder="Escribe el nombre del local"  value=""  autocomplete="off" required>
+					</div>
+					<div class="field-login">
+						<span>Correo <i style="color:red">*</i></span>
+						<input id="correo" type="text" placeholder="Escribe tu correo"  value=""  autocomplete="off"  required>
+					</div>
+							
+					<div class="field-login">
+						<span>Contraseña <i style="color:red">*</i></span>
+						<input id="password" type="password"  placeholder="Escribe tu contraseña" value="" autocomplete="off"  required>
+					</div>
+
+					<div class="field-login">
+						<span>Géneros musicales <i style="color:red" >*</i></span>
+						<textarea id="generosMusicales" type="text" placeholder="Introduce géneros musicales, canciones, grupos o Artistas." rows="3" cols="97"value="" required></textarea>
+					</div>
+
+					<div>
+							<span id="respuesta"  style="color:red" style="text-align:left"></span>
+							<span id="respuesta2"  style="color:rgb(3, 119, 18)" style="text-align:left"></span>
+						</div>
+					<div class="submit"> 
+						<input id="botonVolver" type="submit" value="Volver" onclick="location.href='index.html'"></input>
+            <input id="botonaRegistrar" type="submit" value="Registrarse"></input>
+					</div>
+				</form>
+			</div>
+	       
+    </div>
+
+</body>
+</html>

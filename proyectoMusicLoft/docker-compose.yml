@@ -1,0 +1,43 @@
+version: '3'
+services:
+ # Database
+  db:
+    image: mariadb:10.1
+    restart: always
+    volumes:
+    - ./sql/bd_musicLoft.sql:/docker-entrypoint-initdb.d/bd_musicLoft.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: bd_musicLoft
+      MYSQL_USER: max
+      MYSQL_PASSWORD: 1234
+  # phpmyadmin
+  phpmyadmin:
+    depends_on:
+    - db
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+    - 8080:80
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: 1234
+  # WEB
+  website:
+    build: web
+    ports:
+    - '80:80'
+  # API
+  apirest:
+    build: api
+    ports: 
+    - '8090:80'
+    depends_on: 
+    - db
+
+
+  
+ 
+
+    
+

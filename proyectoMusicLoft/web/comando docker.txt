@@ -1,0 +1,55 @@
+docker-compose build
+docker-compose up
+
+1.descargar imagen
+docker pull nginx
+
+sudo rm -R directorio_que_quieres_borrar
+
+2.creamos la carpeta data, para que nuestros datos persistan en nuestra máquina local. (hacer copias o llevarnos esos datos a otra máquina)
+3.ejecutamos el contenedor:
+docker run -p 8080:80 -v C:/dra/data:/Desktop/dra/data:/usr/share/nginx/html/ -d nginx
+
+4.comprobar contenedores 
+docker ps
+
+-entrar en el navegador
+http://localhost:8080/
+
+5,ejecutar el docker-compose:
+-estar ubidcado en la carpeta data
+docker-compose up -d
+
+-parar contenedores
+docker stop numerodelcontenedor
+
+-arrancar un contenedor
+docker start iddelContenedor
+
+-borrar contenedores
+docker rm -f numerodelcontenedor
+
+-lista de contenedores
+docker ps -a iddelContenedor
+server.port=9188
+
+-******eliminar todos los contenedores*****
+docker rm -f  $(docker ps  -a -q)
+-eliminar todos las imagenes
+docker rmi -f $(docker images -q)
+
+-Para pararlos 
+docker stop $(docker ps -a -q)
+
+-entrar contenedor:
+	
+docker exec -i -t idContenedor /bin/bash
+
+
+ 
+ 
+scp -r canciones.rar jtv215@35.204.78.128:/home
+Desde el servidor darle permiso a la carpeta para pasar música.
+Luego usar winSCP y arrastrar la musica a dicha carpeta, ya no te aparecerá el error 3
+
+sudo chown jtv215 tfgUAL/proyectoMusicLoft/web/

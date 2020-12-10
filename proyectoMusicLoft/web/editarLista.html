@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="micss.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+
+<script src="https://code.jquery.com/jquery-2.2.2.min.js" type="text/javascript"> </script> 
+
+<script>
+	
+
+</script>
+
+<script>
+	$(document).ready(function(){		
+		//Obteniendo datos		
+		obtener_datos();
+	
+		$("#buscar").click(function(e){		
+
+			var texto = document.getElementById("buscador").value;
+			limpiar();
+				if(texto==""){
+					limpiar();
+					$("#mytable").empty()
+					obtener_datos();
+				}else{ 
+
+			var parametros ={		
+			"texto":texto
+			};
+
+			
+			$.ajax({
+				url:"Funciones/buscarCancion.php",
+				method:"get",
+				cache: false,	
+				data: parametros,							
+				}).done(function(resp){	
+
+					
+					var canciones = eval(resp);
+					var cabecera = 
+					"  <tr>" +	
+						"<th>Números</th>"+
+						"<th>Foto</th>"+
+						"<th>Titulo</th>"+
+						"<th> Coste Canción </th>"+
+						"<th>  Puntos Total  </th>"+
+						"<th>cantidad Seleccionada</th>"+
+						"<th>Modificar</th>"+
+						" <th>Eliminar</th>	"+
+					
+					"</tr> "		  
+					$("#mytable").append(cabecera)
+
+						for (  i = 0 ; i < canciones.length; i++){
+							var suma=i+1;
+							var nuevafila= 
+							"<tr>" +			
+								"<td rowspan="+2+">" +"<b>"+ suma + "</b>"+"</td>"+		
+								"<td rowspan="+2+">" +"<"+"img src="+ canciones[i].foto +" width="+100+" height="+100+"> "+ "</td>"+
+								"<td>" +"<b>"+ canciones[i].titulo + "</b>"+"</td>"+
+								"<td rowspan="+2+"  width="+80+"px"+"> "+canciones[i].precio+ "</td>" +
+								"<td rowspan="+2+"> "+canciones[i].precioTotal+ "</td>" +
+								"<td rowspan="+2+"> "+canciones[i].cantidadSeleccionada+ "</td>" +
+								"<td rowspan="+2+"> <button id='modificar' data-id_modificar= "+canciones[i].id+"<i class='far fa-edit'></i> Modificar </button> </td>"+
+								"<td rowspan="+2+"> <button id='eliminar' data-id_eliminado= "+canciones[i].id+" <i class='fas fa-trash-alt'></i> Eliminar </button> </td>"+
+							"</tr>"+
+							"<tr>"+
+								"<td>" + canciones[i].artista+ "</td>"+
+							"</tr>"							
+							$("#mytable").append(nuevafila)
+						}	
+
+			});		
+				}//cierra else		
+   		});
+		
+
+		$(document).on("blur","#titulo",function(){
+			//se le da click a la tabla:
+			//se obtiene ese id de la tabla y nuevo nombre escrito
+			//luego se va a actualizar
+			var id = $(this).data("id_titulo");			
+			var titulo =$(this).text();			
+			actualizar_datos(id,titulo,"titulo");
+		});
+
+		$(document).on("blur","#artista",function(){
+			var id = $(this).data("id_artista");
+			var artista =$(this).text();
+			actualizar_datos(id,artista,"artista");
+		});
+
+		$(document).on("blur","#foto",function(){
+			var id = $(this).data("id_foto");
+			var foto =$(this).text();
+			actualizar_datos(id,foto,"foto");
+		});
+
+		$(document).on("blur","#precio",function(){
+			var id = $(this).data("id_precio");
+			var precio =$(this).text();
+			actualizar_datos(id,precio,"precio");
+		});
+
+		$(document).on("blur","#escuchado",function(){
+			var id = $(this).data("id_escuchado");			
+			var escuchado =$(this).text();
+			actualizar_datos(id,escuchado,"escuchado");
+		});
+
+		$(document).on("click","#eliminar",function(){
+			if(confirm("¿Estas seguro de eliminar esta canción?")){
+
+				var id = $(this).data("id_eliminado");	
+				var parametros ={"id":id};				
+				$.ajax({
+					url:"Funciones/eliminarCancion.php",
+					method:"POST",
+					cache: false,	
+					data: parametros,							
+					succes: function(data){				
+					
+					}					
+				});//Cierra ajax
+
+				window.location.assign("editarLista.html");
+			}//cierro el confirmar			
+		});
+
+		$(document).on("click","#modificar",function(){
+			var id = $(this).data("id_modificar");
+			sessionStorage.setItem("idCancionModificar", id);
+
+			window.location.assign("editarCancion.html");			
+		});
+
+		
+
+	});//cierro el ready
+
+
+	function limpiar()
+{
+
+   document.getElementById("mytable").innerHTML="";
+
+}
+
+	function obtener_datos(){	
+
+		var idLocal = sessionStorage.getItem("id");	
+		var parametros ={
+		"idLocal":idLocal							
+		};
+
+		$.ajax({
+			url:"Funciones/mostrar_datos.php",
+			method:"POST",
+			cache: false,	
+			data: parametros,							
+			}).done(function(resp){	
+				var canciones = eval(resp);
+				
+				
+				var cabecera = 
+				"  <tr>" +	
+					"<th>Números</th>"+
+					"<th>Foto</th>"+
+					"<th>Titulo / Artista</th>"+
+					"<th> Coste Canción </th>"+
+					"<th>  Puntos Totales  </th>"+
+					"<th>Nº de Votos</th>"+
+					"<th>Modificar</th>"+
+					" <th>Eliminar</th>	"+
+				
+				"</tr> "		  
+		 		 $("#mytable").append(cabecera)
+
+					for (  i = 0 ; i < canciones.length; i++){ //cuenta la cantidad de registros
+					var suma=i+1;
+                	 var nuevafila= 
+					 "<tr>" +			
+						"<td rowspan="+2+">" +"<b>"+ suma + "</b>"+"</td>"+		
+						"<td rowspan="+2+">" +"<"+"img src="+ canciones[i].foto +" width="+100+" height="+100+"> "+ "</td>"+
+						"<td>" +"<b>"+ canciones[i].titulo + "</b>"+"</td>"+
+						"<td rowspan="+2+"  width="+80+"px"+"> "+canciones[i].precio+ "</td>" +
+						"<td rowspan="+2+"> "+canciones[i].precioTotal+ "</td>" +
+						"<td rowspan="+2+"> "+canciones[i].cantidadSeleccionada+ "</td>" +
+						"<td rowspan="+2+"> <button id='modificar' data-id_modificar= "+canciones[i].id+"<i class='far fa-edit'></i> Modificar </button> </td>"+
+						"<td rowspan="+2+"> <button id='eliminar' data-id_eliminado= "+canciones[i].id+" <i class='fas fa-trash-alt'></i> Eliminar </button> </td>"+
+					 "</tr>"+
+					 "<tr>"+
+						"<td>" + canciones[i].artista+ "</td>"+
+					"</tr>"
+					
+                $("#mytable").append(nuevafila)
+            }			
+
+			});			
+	}
+	function cargarImagen(url)
+      {
+        var imagen = new Image();
+        imagen.onload = imagenCargada;
+        imagen.src = url;
+        return imagen;
+      }
+	function actualizar_datos(id, texto,nombreColumna){
+		var parametros ={
+		"id":id,
+		"texto":texto,
+		"nombreColumna":nombreColumna							
+		};
+
+		$.ajax({
+			url:"Funciones/actualizarDatos.php",
+			method:"POST",
+			cache: false,	
+			data: parametros,							
+			succes: function(data){
+			
+			obtener_datos();
+			}					
+		});//Cierra ajax
+	}//cierro actualizar datos
+	
+
+
+
+</script>
+</head>
+<body>
+
+<div id="contenedor">
+
+	<!--barra Arriba-->
+	<div id="ParteArriba">
+		<div class="nombreLogo">Music-Loft</div>
+		<div class="logo"><img class="logo" src="img/logo.png" alt="Music-Loft" /></div>
+	</div>
+
+	<!--barra lateral Izquierda-->
+	<div id="barralateral">
+		<ul id="lateralizq">
+			<li><span class="titulo">Menú</span></li>
+			<li><a href="index2.html"><span class="subtitulo">Inicio</span></a></li>
+			<li><a href="subirCancion.html"><span class="subtitulo">Subir Canción</span></a></li>
+			<li><a href="editarLista.html"><span class="subtitulo">Editar Lista</span></a></li>
+			<li><a href="editarDatosPersonales.html"><span class="subtitulo">Datos Personales</span></a></li>	
+			<li><a href="grafica.html"><span class="subtitulo">Ver Gráficas</span></a></li>			
+			<li id="salir"><a href="index.html"><span class="subtitulo" >Cerrar sesión</span></a></li>
+		</ul>
+	</div>
+
+	<!--contenido principal Formulario-->
+<div id="principal">
+
+		<!--contenido principal Formulario
+		<div id= "columnaVacia"></div>
+		-->
+	
+		<div class="wrapper">
+			
+				<div>
+				
+					<div class="nombre-seccion2">
+						<span>Lista de canciones</span>
+						<p id="demo"></p>
+					</div>
+						<div>
+						<table  id="mytable"  class="table table-bordered table-hover ">	
+							</table>
+						</div>
+				</div>	
+				
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

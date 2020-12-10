@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="../../lib/jquery.min.js"></script>
+<script type="text/javascript" src="../../dist/jplayer/jquery.jplayer.min.js"></script>
+<script type="text/javascript" src="../../dist/add-on/jplayer.playlist.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+      $("#jquery_jplayer_1").jPlayer({
+        ready: function () {
+          $(this).jPlayer("setMedia", {
+            title: "Big Buck Bunny",
+            m4v: "http://www.jplayer.org/video/m4v/Big_Buck_Bunny_Trailer.m4v",
+            ogv: "http://www.jplayer.org/video/ogv/Big_Buck_Bunny_Trailer.ogv",
+            poster: "http://www.jplayer.org/video/poster/Big_Buck_Bunny_Trailer_480x270.png"
+          });
+        },
+        swfPath: "/js",
+        supplied: "m4v, ogv",
+        cssSelectorAncestor: "",
+        cssSelector: {
+          title: "#title",
+          play: "#play",
+          pause: "#pause",
+          stop: "#stop",
+          mute: "#mute",
+          unmute: "#unmute",
+          currentTime: "#currentTime",
+         duration: "#duration",
+		 ended:"#termina"
+        },
+        size: {
+          width: "320px",
+          height: "180px"
+        }
+      });
+    });
+  </script>
+  <style>
+    div.jp-jplayer {
+      border:1px solid #009be3;
+    }
+  </style>
+</head>
+<body>
+  <p>
+    <button id="play">play</button><button id="pause">pause</button>
+    <button id="stop">stop</button>
+    <button id="mute">mute</button><button id="unmute">unmute</button>
+    <span id="title"></span> |
+	 <span id="ended"></span> |
+    <span id="currentTime"></span> / <span id="duration"></span>
+  </p>
+  <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+</body>
+<html>
